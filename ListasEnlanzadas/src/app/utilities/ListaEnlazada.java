@@ -233,6 +233,7 @@ public class ListaEnlazada<T>
             {
                 sb.append(" -> ");
             }
+            escritor = escritor.next();
         }
         return sb.toString();
     }
