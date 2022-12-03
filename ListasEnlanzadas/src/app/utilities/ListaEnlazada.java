@@ -26,8 +26,8 @@ public class ListaEnlazada<T>
     public ListaEnlazada(Enlazable firstElement)
     {
         first = firstElement;
-        last = null;
-        first.setNext(last);
+        last = firstElement;
+        first.setNext(null);
         len = 1;
     }
     
@@ -44,6 +44,22 @@ public class ListaEnlazada<T>
     }
     
     // MÉTODOS 
+    
+    /*
+     *  Método "T getFirst()": Retonará el primer elemento de la lista.
+     */
+    public T getFirst()
+    {
+        return (T)first;
+    }
+    
+    /*
+     *  Método "T getLast()": Retonará el ultimo elemento de la lista.
+     */
+    public T getLast()
+    {
+        return (T)last;
+    }
     
     /*
      *  Método "T get(int)": Retonará el elemento de la i-ésima posición desde el inicio hacia el final.
@@ -101,24 +117,13 @@ public class ListaEnlazada<T>
             return;
         }
         
-        // De lo contrario:
-        
-        // Verificamos si el elemento es el ultimo.
+        // Verificamos si el elemento va a ser asignado después del ultimo.
         if(element == last)
         {
-            // De ser así lo agregamos cómo el ultimo.
+            // De ser así agregamos de ultimo.
             addLast(newElement);
             return;
         }
-        
-        // Verificamos si el elemento es el primero.
-        if(element == first)
-        {
-            addFirst(newElement);
-            return;
-        }
-        
-        // Si no es ninguna de las anterior insertamos en le medio.
         
         // Hacemos que el nuevo apunte a donde apunta el actual
         newElement.setNext(element.next());
@@ -128,7 +133,6 @@ public class ListaEnlazada<T>
         
         // Aumentamos el tamaño de la lista
         len++;
-        
     }
     
     /*
@@ -144,6 +148,22 @@ public class ListaEnlazada<T>
         
         // Aumentamos el tamaño de la lista.
         len++;
+        
+        // Verificamos si hay sólo dos elementos.
+        if(len == 2)
+        {
+            // Hacemos que el siguiente del agregado sea el ultimo.
+            last = newElement.next();
+            return;
+        }
+        
+        // Verificamos si el primero agregadon
+        if(len == 1)
+        {
+            // Hacemos que el primer elemento sea el ultimo también.
+            last = first;
+            first.setNext(null);
+        }
     }
     
     /*
@@ -151,6 +171,14 @@ public class ListaEnlazada<T>
      */
     public void addLast(Enlazable newElement)
     {
+        // Verificamos si es el primer elemento agregado
+        if(len == 0)
+        {
+            // De ser así lo agreamos cómo el primero
+            addFirst(newElement);
+            return;
+        }
+        
         // Hacemos que el ultimo actual apunte a este.
         last.setNext(newElement);
         
@@ -171,6 +199,20 @@ public class ListaEnlazada<T>
         // Si la lista no contiene al elemento no eliminamos nada puesto que puede ocurrir un "NullPointerException".
         if(!contains(element)) return;
         
+        // Verificamos si queremos eliminar al primero.
+        if(element == first)
+        {
+            removeFirst();
+            return;
+        }
+        
+        // Verificamos si queremos eliminar al ultimo.
+        if(element == last)
+        {
+            removeLast();
+            return;
+        }
+        
         Enlazable antecesor = first; // El elemento que contendrá al antencesor
         
         // Buscamos cual es el antecesor
@@ -185,6 +227,39 @@ public class ListaEnlazada<T>
         element.setNext(null);
         
         // Disminuimos la lista
+        len--;
+    }
+    
+    /*
+     *  Método "removeFirst()": Remueve el primer elemento de la lista.
+     */
+    public void removeFirst()
+    {
+        // Verificamos que la lista no esté vacia
+        if(len == 0) return;
+        
+        first = first.next();
+        len--;
+    }
+    
+    /*
+     *  Método "removeLast()": Remueve el primer ultimo elemento de la lista.
+     */
+    public void removeLast()
+    {
+        // Verificamos que la lista no esté vacia
+        if(len == 0) return;
+        
+        Enlazable buscador = first; // Buscamos cual elemento apunta a nulo.
+        while(buscador.next() != last)
+        {
+            // Nos movemos entre los elementos de la lista
+            buscador = buscador.next();
+        }
+        
+        // Una vez encontrado lo hacemos el ultimo
+        last = buscador;
+        last.setNext(null);
         len--;
     }
     
@@ -217,9 +292,16 @@ public class ListaEnlazada<T>
     }
     
     /*
+     *  Método "length()": Retorna el número de elemento pertenecientes a la lista.
+     */
+    public int length()
+    {
+        return len;
+    }
+    
+    /*
      *  Sobremontura del método "toString()".
      */
-    
     @Override
     public String toString()
     {
